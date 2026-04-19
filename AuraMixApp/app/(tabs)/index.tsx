@@ -1,8 +1,9 @@
 import React, { useState, useRef } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
-  ScrollView, Animated,
+  ScrollView, Animated, Image, Alert,
 } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import { useStore } from '../../hooks/useStore';
 import { OutfitCard } from '../../components/OutfitCard';
 import { C, WardrobeItem, Outfit } from '../../constants/theme';
@@ -23,6 +24,7 @@ export default function DashboardScreen() {
 
   const [outfit,  setOutfit]  = useState<Outfit>(initOutfit);
   const [hearted, setHearted] = useState(false);
+  const [imageUri, setImageUri] = useState<string | null>(null);
   const shakeX = useRef(new Animated.Value(0)).current;
 
   const doShuffle = () => {
@@ -47,6 +49,41 @@ export default function DashboardScreen() {
     });
     incShuffle();
     setHearted(false);
+  };
+
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission required', 'Please allow access to your photos.');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 0.8,
+    });
+
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+    }
+  };
+
+  const takePhoto = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission required', 'Please allow camera access.');
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      quality: 0.8,
+    });
+
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+    }
   };
 
   const doSave = () => {
@@ -99,6 +136,23 @@ export default function DashboardScreen() {
         >
           <Text style={{ fontSize: 22 }}>{hearted ? '❤️' : '🤍'}</Text>
         </TouchableOpacity>
+      </View>
+
+      <View style={s.pickerSection}>
+        <Text style={s.pickerTitle}>Add a style photo</Text>
+        <View style={s.pickerRow}>
+          <TouchableOpacity style={s.pickerBtn} onPress={pickImage} activeOpacity={0.8}>
+            <Text style={s.pickerBtnText}>Gallery</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={s.pickerBtn} onPress={takePhoto} activeOpacity={0.8}>
+            <Text style={s.pickerBtnText}>Camera</Text>
+          </TouchableOpacity>
+        </View>
+        {imageUri ? (
+          <Image source={{ uri: imageUri }} style={s.previewImage} />
+        ) : (
+          <Text style={s.pickerHint}>Choose an image to preview it here.</Text>
+        )}
       </View>
 
       {/* Saved preview */}
@@ -165,8 +219,15 @@ const s = StyleSheet.create({
   emptyIcon:  { fontSize: 40, marginBottom: 10 },
   emptyTitle: { fontSize: 14, fontWeight: '600', color: C.gray5 },
   emptySub:   { fontSize: 12, color: C.gray3, textAlign: 'center', marginTop: 4 },
-  pillList:   { paddingHorizontal: 12, paddingVertical: 4 },
-  pill:       { width: 128, borderWidth: 0.5, borderColor: C.gray2, borderRadius: 14, padding: 10, backgroundColor: C.white, marginRight: 8 },
-  pillEmojis: { flexDirection: 'row', gap: 2, marginBottom: 6 },
-  pillLabel:  { fontSize: 11, color: C.gray4 },
+  pickerSection: { marginTop: 20, paddingHorizontal: 14, paddingBottom: 14 },
+  pickerTitle:   { fontSize: 14, fontWeight: '700', color: C.black, marginBottom: 10 },
+  pickerRow:     { flexDirection: 'row', gap: 12, marginBottom: 12 },
+  pickerBtn:     { flex: 1, backgroundColor: C.black, borderRadius: 14, paddingVertical: 14, alignItems: 'center' },
+  pickerBtnText: { color: C.white, fontWeight: '700', fontSize: 13 },
+  previewImage:  { width: '100%', height: 210, borderRadius: 18, marginTop: 10, backgroundColor: C.gray2 },
+  pickerHint:    { color: C.gray4, fontSize: 12, lineHeight: 18 },
+  pillList:     { paddingHorizontal: 12, paddingVertical: 4 },
+  pill:         { width: 128, borderWidth: 0.5, borderColor: C.gray2, borderRadius: 14, padding: 10, backgroundColor: C.white, marginRight: 8 },
+  pillEmojis:   { flexDirection: 'row', gap: 2, marginBottom: 6 },
+  pillLabel:    { fontSize: 11, color: C.gray4 },
 });

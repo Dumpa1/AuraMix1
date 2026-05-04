@@ -77,13 +77,5 @@ export const CAT_TC: Record<Category, string> = {
 export const CATEGORIES: Category[] = ['Top', 'Bottom', 'Shoes', 'Accessories'];
 
 export const INITIAL_WARDROBE: WardrobeItem[] = [
-  { id: '1', name: 'Compression Shirt',     cat: 'Top',         emoji: '👕', color: C.topBg,    tc: C.topText    },
-  { id: '2', name: 'Oversized Graphic Tee', cat: 'Top',         emoji: '👕', color: C.topBg,    tc: C.topText    },
-  { id: '3', name: 'Cargo Pants',           cat: 'Bottom',      emoji: '👖', color: C.bottomBg, tc: C.bottomText },
-  { id: '4', name: 'Wide Leg Jeans',        cat: 'Bottom',      emoji: '👖', color: C.bottomBg, tc: C.bottomText },
-  { id: '5', name: 'Nike Journey Running',  cat: 'Shoes',       emoji: '👟', color: C.shoesBg,  tc: C.shoesText  },
-  { id: '6', name: 'Air Force 1',           cat: 'Shoes',       emoji: '👟', color: C.shoesBg,  tc: C.shoesText  },
-  { id: '7', name: 'Dog Tag Necklace',      cat: 'Accessories', emoji: '📿', color: C.accBg,    tc: C.accText    },
-  { id: '8', name: 'Bucket Hat',            cat: 'Accessories', emoji: '🧢', color: C.accBg,    tc: C.accText    },
 ];
 

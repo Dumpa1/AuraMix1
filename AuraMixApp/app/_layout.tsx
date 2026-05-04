@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
-  Animated, Dimensions, StatusBar, Image,
+  Animated, Dimensions, StatusBar,
 } from 'react-native';
 import { Slot } from 'expo-router';
 import { StoreProvider } from '../hooks/useStore';
@@ -55,6 +55,12 @@ function LandingScreen({ onStart }: { onStart: () => void }) {
       <View style={s.stripe1} />
       <View style={s.stripe2} />
 
+      <View style={s.heroArea}>
+        <Text style={s.heroMain}>👟</Text>
+        <Text style={s.heroLeft}>👕</Text>
+        <Text style={s.heroRight}>🧢</Text>
+      </View>
+
       <View style={s.titleBlock}>
         <Text style={s.appName}>AuraMix</Text>
         <Text style={s.tagline}>
@@ -96,8 +102,8 @@ export default function RootLayout() {
 }
 
 const s = StyleSheet.create({
-  landing:   { flex: 1, backgroundColor: '#111', alignItems: 'center', justifyContent: 'center', paddingBottom: 40, overflow: 'hidden' },
-  slideImage: { position: 'absolute', top: 0, left: 0, width: SW, height: SH, opacity: 0.5 },
+  landing:   { flex: 1, backgroundColor: '#111', alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 64, overflow: 'hidden' },
+  slideImage: { position: 'absolute', top: 0, left: 0, width: SW, height: SH, opacity: 0.35 },
   slideOverlay: { position: 'absolute', top: 0, left: 0, width: SW, height: SH, backgroundColor: '#000', opacity: 0.18 },
   stripe1:   { position: 'absolute', top: -60, left: -50, width: SW * 1.3, height: SH * 0.55, backgroundColor: C.teal, opacity: 0.09, transform: [{ rotate: '-14deg' }] },
   stripe2:   { position: 'absolute', top: 60,  left: -70, width: SW * 1.3, height: SH * 0.28, backgroundColor: C.teal, opacity: 0.05, transform: [{ rotate: '-14deg' }] },

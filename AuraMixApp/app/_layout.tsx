@@ -23,7 +23,7 @@ function LandingScreen({ onStart }: { onStart: () => void }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setSlide((current) => (current + 1) % landingImages.length);
-    }, 4500);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -102,19 +102,19 @@ export default function RootLayout() {
 }
 
 const s = StyleSheet.create({
-  landing:   { flex: 1, backgroundColor: '#111', alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 64, overflow: 'hidden' },
-  slideImage: { position: 'absolute', top: 0, left: 0, width: SW, height: SH, opacity: 0.35 },
+  landing:   { flex: 1, backgroundColor: '#111', alignItems: 'center', justifyContent: 'center', paddingBottom: 0, overflow: 'hidden' },
+  slideImage: { position: 'absolute', top: 0, left: 0, width: SW, height: SH, opacity: 0.5 },
   slideOverlay: { position: 'absolute', top: 0, left: 0, width: SW, height: SH, backgroundColor: '#000', opacity: 0.18 },
-  stripe1:   { position: 'absolute', top: -60, left: -50, width: SW * 1.3, height: SH * 0.55, backgroundColor: C.teal, opacity: 0.09, transform: [{ rotate: '-14deg' }] },
-  stripe2:   { position: 'absolute', top: 60,  left: -70, width: SW * 1.3, height: SH * 0.28, backgroundColor: C.teal, opacity: 0.05, transform: [{ rotate: '-14deg' }] },
+  stripe1:   { position: 'absolute', top: SH * 0.15, left: -SW * 0.2, width: SW * 1.4, height: SH * 0.5, backgroundColor: C.teal, opacity: 0.09, transform: [{ rotate: '-12deg' }] },
+  stripe2:   { position: 'absolute', top: SH * 0.45, left: -SW * 0.3, width: SW * 1.5, height: SH * 0.4, backgroundColor: C.teal, opacity: 0.06, transform: [{ rotate: '-12deg' }] },
   heroArea:  { position: 'absolute', top: SH * 0.1, alignItems: 'center', width: '100%' },
   heroMain:  { fontSize: 100, textShadowColor: 'rgba(0,198,203,0.35)', textShadowOffset: { width: 0, height: 10 }, textShadowRadius: 28 },
   heroLeft:  { fontSize: 54, position: 'absolute', top: 28, right: SW * 0.1, opacity: 0.72 },
   heroRight: { fontSize: 46, position: 'absolute', top: 90, left: SW * 0.08, opacity: 0.65 },
-  titleBlock:{ alignItems: 'center', marginBottom: 40 },
-  appName:   { fontSize: 50, fontWeight: '800', color: '#fff', letterSpacing: -1.5 },
-  tagline:   { fontSize: 14, color: 'rgba(255,255,255,0.58)', textAlign: 'center', marginTop: 10, lineHeight: 22 },
-  startBtn:  { width: 92, height: 92, borderRadius: 46, backgroundColor: C.teal, alignItems: 'center', justifyContent: 'center', elevation: 10, shadowColor: C.teal, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.55, shadowRadius: 16 },
-  startText: { color: '#fff', fontWeight: '800', fontSize: 15, letterSpacing: 1.2 },
-  footerHint:{ color: 'rgba(255,255,255,0.3)', fontSize: 12, marginTop: 22, letterSpacing: 0.5 },
+  titleBlock:{ alignItems: 'center', marginBottom: SH * 0.12, zIndex: 10 },
+  appName:   { fontSize: Math.min(SW * 0.15, 60), fontWeight: '800', color: '#fff', letterSpacing: -1.5 },
+  tagline:   { fontSize: Math.min(SW * 0.035, 14), color: 'rgba(255,255,255,0.7)', textAlign: 'center', marginTop: 10, lineHeight: 22, paddingHorizontal: 20 },
+  startBtn:  { width: 100, height: 100, borderRadius: 50, backgroundColor: C.teal, alignItems: 'center', justifyContent: 'center', elevation: 10, shadowColor: C.teal, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.55, shadowRadius: 16, marginVertical: SH * 0.1 },
+  startText: { color: '#fff', fontWeight: '800', fontSize: Math.min(SW * 0.04, 16), letterSpacing: 1.2 },
+  footerHint:{ color: 'rgba(255,255,255,0.3)', fontSize: Math.min(SW * 0.03, 12), marginTop: 0, letterSpacing: 0.5, position: 'absolute', bottom: 40 },
 });

@@ -88,9 +88,13 @@ export default function DashboardScreen() {
 
       {/* Shuffle + Heart */}
       <View style={s.actionRow}>
-        <TouchableOpacity style={s.shuffleBtn} onPress={doShuffle} activeOpacity={0.85}>
+        <TouchableOpacity
+          style={[s.shuffleBtn, wardrobe.length === 0 && s.shuffleBtnDisabled]}
+          onPress={wardrobe.length > 0 ? doShuffle : undefined}
+          activeOpacity={wardrobe.length > 0 ? 0.85 : 0.5}
+        >
           <Text style={s.shuffleIcon}>⚡</Text>
-          <Text style={s.shuffleText}>Shuffle</Text>
+          <Text style={[s.shuffleText, wardrobe.length === 0 && s.shuffleTextDisabled]}>Shuffle</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[s.heartBtn, hearted && s.heartBtnOn]}
@@ -157,8 +161,10 @@ const s = StyleSheet.create({
   pinkHeart:  { color: C.pink, fontSize: 16, marginRight: 8 },
   actionRow:  { flexDirection: 'row', gap: 8, marginHorizontal: 12, marginTop: 4 },
   shuffleBtn: { flex: 1, backgroundColor: C.black, borderRadius: 14, paddingVertical: 15, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
+  shuffleBtnDisabled: { backgroundColor: C.gray3, opacity: 0.6 },
   shuffleIcon:{ fontSize: 16 },
   shuffleText:{ color: C.white, fontWeight: '700', fontSize: 15 },
+  shuffleTextDisabled: { color: C.gray5 },
   heartBtn:   { width: 52, height: 52, borderRadius: 14, borderWidth: 1.5, borderColor: C.gray2, backgroundColor: C.white, alignItems: 'center', justifyContent: 'center' },
   heartBtnOn: { backgroundColor: C.pinkLight, borderColor: C.pink },
   empty:      { alignItems: 'center', paddingVertical: 28, paddingHorizontal: 20 },

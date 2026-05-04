@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
-  Animated, Dimensions, StatusBar,
+  Animated, Dimensions, StatusBar, Image,
 } from 'react-native';
 import { Slot } from 'expo-router';
 import { StoreProvider } from '../hooks/useStore';
@@ -9,8 +9,32 @@ import { C } from '../constants/theme';
 
 const { width: SW, height: SH } = Dimensions.get('window');
 
+const landingImages = [
+  require('../assets/images/aura1.jpg'),
+  require('../assets/images/aura2.jpg'),
+  require('../assets/images/aura3.jpg'),
+];
+
 function LandingScreen({ onStart }: { onStart: () => void }) {
   const scale = useRef(new Animated.Value(1)).current;
+  const [slide, setSlide] = useState(0);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSlide((current) => (current + 1) % landingImages.length);
+    }, 4500);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    fadeAnim.setValue(0);
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 700,
+      useNativeDriver: true,
+    }).start();
+  }, [slide, fadeAnim]);
 
   const press = () => {
     Animated.sequence([
@@ -21,15 +45,15 @@ function LandingScreen({ onStart }: { onStart: () => void }) {
 
   return (
     <View style={s.landing}>
+      <Animated.Image
+        source={landingImages[slide]}
+        style={[s.slideImage, { opacity: fadeAnim }]}
+        resizeMode="cover"
+      />
       <StatusBar barStyle="light-content" />
+      <Animated.View style={[s.slideOverlay, { opacity: fadeAnim }]} />
       <View style={s.stripe1} />
       <View style={s.stripe2} />
-
-      <View style={s.heroArea}>
-        <Text style={s.heroMain}>👟</Text>
-        <Text style={s.heroLeft}>👕</Text>
-        <Text style={s.heroRight}>🧢</Text>
-      </View>
 
       <View style={s.titleBlock}>
         <Text style={s.appName}>AuraMix</Text>
@@ -72,7 +96,9 @@ export default function RootLayout() {
 }
 
 const s = StyleSheet.create({
-  landing:   { flex: 1, backgroundColor: '#111', alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 64 },
+  landing:   { flex: 1, backgroundColor: '#111', alignItems: 'center', justifyContent: 'center', paddingBottom: 40, overflow: 'hidden' },
+  slideImage: { position: 'absolute', top: 0, left: 0, width: SW, height: SH, opacity: 0.5 },
+  slideOverlay: { position: 'absolute', top: 0, left: 0, width: SW, height: SH, backgroundColor: '#000', opacity: 0.18 },
   stripe1:   { position: 'absolute', top: -60, left: -50, width: SW * 1.3, height: SH * 0.55, backgroundColor: C.teal, opacity: 0.09, transform: [{ rotate: '-14deg' }] },
   stripe2:   { position: 'absolute', top: 60,  left: -70, width: SW * 1.3, height: SH * 0.28, backgroundColor: C.teal, opacity: 0.05, transform: [{ rotate: '-14deg' }] },
   heroArea:  { position: 'absolute', top: SH * 0.1, alignItems: 'center', width: '100%' },

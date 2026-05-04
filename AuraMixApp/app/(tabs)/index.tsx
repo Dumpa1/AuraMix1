@@ -1,9 +1,8 @@
 import React, { useState, useRef } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
-  ScrollView, Animated, Image, Alert,
+  ScrollView, Animated,
 } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
 import { useStore } from '../../hooks/useStore';
 import { OutfitCard } from '../../components/OutfitCard';
 import { C, WardrobeItem, Outfit } from '../../constants/theme';
@@ -24,7 +23,6 @@ export default function DashboardScreen() {
 
   const [outfit,  setOutfit]  = useState<Outfit>(initOutfit);
   const [hearted, setHearted] = useState(false);
-  const [imageUri, setImageUri] = useState<string | null>(null);
   const shakeX = useRef(new Animated.Value(0)).current;
 
   const doShuffle = () => {
@@ -45,45 +43,10 @@ export default function DashboardScreen() {
       top:         tops.length  ? rand(tops)  : null,
       bottom:      bots.length  ? rand(bots)  : null,
       shoes:       shoes.length ? rand(shoes) : null,
-      accessories: accs.length  ? rand(accs)  : null,
+      accessories: accs.length  ? rand(accs) : null,
     });
     incShuffle();
     setHearted(false);
-  };
-
-  const pickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission required', 'Please allow access to your photos.');
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 0.8,
-    });
-
-    if (!result.canceled) {
-      setImageUri(result.assets[0].uri);
-    }
-  };
-
-  const takePhoto = async () => {
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission required', 'Please allow camera access.');
-      return;
-    }
-
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      quality: 0.8,
-    });
-
-    if (!result.canceled) {
-      setImageUri(result.assets[0].uri);
-    }
   };
 
   const doSave = () => {
@@ -136,23 +99,6 @@ export default function DashboardScreen() {
         >
           <Text style={{ fontSize: 22 }}>{hearted ? '❤️' : '🤍'}</Text>
         </TouchableOpacity>
-      </View>
-
-      <View style={s.pickerSection}>
-        <Text style={s.pickerTitle}>Add a style photo</Text>
-        <View style={s.pickerRow}>
-          <TouchableOpacity style={s.pickerBtn} onPress={pickImage} activeOpacity={0.8}>
-            <Text style={s.pickerBtnText}>Gallery</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={s.pickerBtn} onPress={takePhoto} activeOpacity={0.8}>
-            <Text style={s.pickerBtnText}>Camera</Text>
-          </TouchableOpacity>
-        </View>
-        {imageUri ? (
-          <Image source={{ uri: imageUri }} style={s.previewImage} />
-        ) : (
-          <Text style={s.pickerHint}>Choose an image to preview it here.</Text>
-        )}
       </View>
 
       {/* Saved preview */}

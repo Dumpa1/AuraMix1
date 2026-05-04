@@ -3,6 +3,7 @@ import {
   View, Text, TextInput, TouchableOpacity,
   Modal, StyleSheet, Image, Alert,
 } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import { C, CATEGORIES, CAT_EMOJI, CAT_BG, CAT_TC, Category, WardrobeItem } from '../constants/theme';
 
 interface Props {
@@ -16,12 +17,42 @@ export function AddItemModal({ visible, onClose, onSave }: Props) {
   const [cat, setCat] = useState<Category>('Top');
   const [imageUri, setImageUri] = useState<string | null>(null);
 
-  const pickImage = () => {
-    Alert.alert('Photos unavailable', 'Image picking is temporarily disabled until expo-image-picker is installed.');
+  const pickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission required', 'Please allow access to your photos.');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+    }
   };
 
-  const takePhoto = () => {
-    Alert.alert('Camera unavailable', 'Camera capture is temporarily disabled until expo-image-picker is installed.');
+  const takePhoto = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission required', 'Please allow camera access.');
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+    }
   };
 
   const handleSave = () => {
@@ -67,13 +98,13 @@ export function AddItemModal({ visible, onClose, onSave }: Props) {
               ) : (
                 <>
                   <Text style={s.photoIcon}>Camera</Text>
-                  <Text style={s.photoLabel}>Disabled</Text>
+                  <Text style={s.photoLabel}>Tap to capture</Text>
                 </>
               )}
             </TouchableOpacity>
             <TouchableOpacity style={[s.photoBox, s.photoBoxAlt]} onPress={pickImage} activeOpacity={0.8}>
               <Text style={s.photoIcon}>Gallery</Text>
-              <Text style={s.photoLabel}>Disabled</Text>
+              <Text style={s.photoLabel}>Tap to choose</Text>
             </TouchableOpacity>
             {imageUri && (
               <TouchableOpacity style={s.clearPhoto} onPress={() => setImageUri(null)}>
